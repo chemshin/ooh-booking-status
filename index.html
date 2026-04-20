@@ -94,23 +94,7 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 .alert-mid  .alert-dot { background: var(--warn);   box-shadow: 0 0 6px var(--warn); }
 .alert-text { font-size: 12.5px; font-weight: 500; }
 
-/* ── Summary Row ── */
-.summary-row {
-  display: grid; grid-template-columns: repeat(4,1fr);
-  gap: 10px; margin-bottom: 2rem;
-}
-.sum-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 1rem 1.25rem;
-  position: relative; overflow: hidden; transition: border-color .2s;
-}
-.sum-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--accent), #7b5cf0); opacity: .5;
-}
-.sum-label { font-size: 11px; color: var(--text3); margin-bottom: 8px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
-.sum-val { font-size: 24px; font-weight: 700; font-family: var(--mono); letter-spacing: -.02em; }
-.sum-unit { font-size: 12px; color: var(--text2); font-family: var(--font); font-weight: 400; margin-left: 2px; }
+
 
 /* ── Section Title ── */
 .section-title {
@@ -163,6 +147,7 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
 .donut-pct { font-size: 20px; font-weight: 700; font-family: var(--mono); line-height: 1.1; letter-spacing: -.02em; }
 .donut-label { font-size: 9px; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
+.donut-total { font-size: 9px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
 
 .legend { display: flex; flex-direction: column; gap: 6px; width: 100%; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 2px; }
 .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; }
@@ -290,6 +275,16 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Loading Spinner ── */
+.spinner {
+  width: 32px; height: 32px; margin: 0 auto;
+  border: 3px solid var(--border2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   body { padding: 1.25rem 1rem 3rem; }
@@ -312,7 +307,6 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 
 <div class="month-tabs" id="monthTabs"></div>
 <div class="alerts" id="alerts"></div>
-<div class="summary-row" id="summaryRow"></div>
 <p class="section-title">매체별 부킹 현황 — 클릭하면 광고주 리스트를 볼 수 있어요</p>
 <div class="card-grid" id="cardGrid"></div>
 
@@ -335,250 +329,86 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 
 <script>
 /* ═══════════════════════════════════════════
-   DATA — Summary
+   CONFIG
 ═══════════════════════════════════════════ */
-const SUMMARY = {
-  "26년 4월": [
-    { name:"CMT",             comTotal:24.7, booked:15.7, remain:9.0,  paid:9.7,  svc:6.0,  bookPct:63.5 },
-    { name:"PMT",             comTotal:24.7, booked:17.3, remain:7.3,  paid:10.3, svc:7.0,  bookPct:70.2 },
-    { name:"커브드월 홍대",     comTotal:24.7, booked:21.8, remain:2.9,  paid:14.8, svc:7.0,  bookPct:88.3 },
-    { name:"어메이징 파르나스", comTotal:22.2, booked:17.8, remain:4.4,  paid:4.3,  svc:13.5, bookPct:80.3 },
-    { name:"T204",            comTotal:17.7, booked:7.0,  remain:10.7, paid:1.0,  svc:6.0,  bookPct:39.5 },
-    { name:"KT Square",       comTotal:null, booked:5.0,  remain:null, paid:5.0,  svc:0.0,  bookPct:null },
-    { name:"SB타워",           comTotal:17.3, booked:2.0,  remain:15.3, paid:2.0,  svc:0.0,  bookPct:11.6 },
-  ],
-  "26년 5월": [
-    { name:"CMT",             comTotal:24.7, booked:6.9,  remain:17.8, paid:5.9,  svc:1.0,  bookPct:27.9 },
-    { name:"PMT",             comTotal:24.7, booked:8.6,  remain:16.1, paid:7.6,  svc:1.0,  bookPct:34.7 },
-    { name:"커브드월 홍대",     comTotal:24.7, booked:14.0, remain:10.7, paid:13.5, svc:0.5,  bookPct:56.5 },
-    { name:"어메이징 파르나스", comTotal:22.2, booked:6.5,  remain:15.7, paid:4.0,  svc:2.5,  bookPct:29.3 },
-    { name:"T204",            comTotal:17.7, booked:4.0,  remain:13.7, paid:1.0,  svc:3.0,  bookPct:22.6 },
-    { name:"KT Square",       comTotal:null, booked:7.0,  remain:null, paid:7.0,  svc:0.0,  bookPct:null },
-    { name:"SB타워",           comTotal:17.3, booked:0.0,  remain:17.3, paid:0.0,  svc:0.0,  bookPct:0.0  },
-  ],
-  "26년 6월": [
-    { name:"CMT",             comTotal:24.7, booked:2.7,  remain:22.0, paid:2.7,  svc:0.0,  bookPct:10.8 },
-    { name:"PMT",             comTotal:24.7, booked:2.7,  remain:22.0, paid:2.7,  svc:0.0,  bookPct:10.8 },
-    { name:"커브드월 홍대",     comTotal:24.7, booked:13.5, remain:11.2, paid:13.0, svc:0.5,  bookPct:54.7 },
-    { name:"어메이징 파르나스", comTotal:22.2, booked:3.2,  remain:19.0, paid:1.7,  svc:1.5,  bookPct:14.3 },
-    { name:"T204",            comTotal:17.7, booked:7.5,  remain:10.2, paid:5.5,  svc:2.0,  bookPct:42.4 },
-    { name:"KT Square",       comTotal:null, booked:3.0,  remain:null, paid:3.0,  svc:0.0,  bookPct:null },
-    { name:"SB타워",           comTotal:17.3, booked:6.0,  remain:11.3, paid:6.0,  svc:0.0,  bookPct:34.7 },
-  ]
-};
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxWbr_JTrsUJKZbkNPOGBHTZkVqzvtqC2khpCgi_dw1uhj5hhuXwicxKi_LJSepdEomDQ/exec";
 
 /* ═══════════════════════════════════════════
-   DATA — 광고주 (코엑스 미디어타워 기준 샘플)
-   실제 운영 시: 각 매체 시트 데이터로 교체
+   STATE
 ═══════════════════════════════════════════ */
-const ADVERTISERS = {
-  "CMT": {
-    "26년 4월": {
-      total: 24.7, booked: 15.675, remain: 9.0,
-      list: [
-        { type:"일반", name:"LG전자",           runtime:30, slot:2.175, sec:65.25, period:"메시 20, 35, 50분" },
-        { type:"서비스", name:"LG전자",          runtime:30, slot:0.5,   sec:15,    period:"" },
-        { type:"일반", name:"스포티비",          runtime:30, slot:1,     sec:30,    period:"2/20~4/19" },
-        { type:"일반", name:"불가리",            runtime:30, slot:1,     sec:30,    period:"3/22~4/21" },
-        { type:"일반", name:"하루틴",            runtime:30, slot:1,     sec:30,    period:"3~6월" },
-        { type:"일반", name:"알프로랜",          runtime:30, slot:0.5,   sec:15,    period:"" },
-        { type:"일반", name:"캄스버그(1664 블랑)",runtime:30, slot:1,     sec:30,    period:"" },
-        { type:"일반", name:"모엣헤네시",         runtime:30, slot:2,     sec:60,    period:"" },
-        { type:"서비스", name:"넥슨",            runtime:30, slot:2,     sec:60,    period:"" },
-        { type:"서비스", name:"NH투자증권",       runtime:30, slot:1,     sec:30,    period:"4~5월" },
-        { type:"서비스", name:"마케터클럽",       runtime:30, slot:1,     sec:30,    period:"3/27~4/15" },
-        { type:"서비스", name:"PCD",             runtime:30, slot:1,     sec:30,    period:"" },
-        { type:"서비스", name:"타사키",           runtime:30, slot:0.5,   sec:15,    period:"" },
-        { type:"일반", name:"슬랙",              runtime:30, slot:1,     sec:30,    period:"4/13~5/12" },
-      ]
-    },
-    "26년 5월": {
-      total: 24.7, booked: 6.9, remain: 17.8,
-      list: [
-        { type:"일반", name:"하루틴",    runtime:30, slot:1, sec:30, period:"3~6월" },
-        { type:"일반", name:"슬랙",      runtime:30, slot:1, sec:30, period:"4/13~5/12" },
-        { type:"서비스", name:"NH투자증권", runtime:30, slot:1, sec:30, period:"4~5월" },
-      ]
-    },
-    "26년 6월": {
-      total: 24.7, booked: 2.7, remain: 22.0,
-      list: [
-        { type:"일반", name:"하루틴",  runtime:30, slot:1, sec:30, period:"3~6월" },
-      ]
-    }
-  },
-  "PMT": {
-    "26년 4월": {
-      total: 24.7, booked: 17.3, remain: 7.3,
-      list: [
-        { type:"일반", name:"삼성전자",       runtime:30, slot:1,     sec:30,    period:"2/26~4/3" },
-        { type:"일반", name:"송하 펜클럽",     runtime:20, slot:1,     sec:20,    period:"4/18~4/20" },
-        { type:"일반", name:"COS",            runtime:30, slot:1,     sec:30,    period:"3/2~4/5" },
-        { type:"일반", name:"라코스테",        runtime:30, slot:1.5,   sec:45,    period:"4/27~5/26" },
-        { type:"일반", name:"블랙아크",        runtime:30, slot:0.725, sec:21.75, period:"메시 15분, 3/4~4/1" },
-        { type:"일반", name:"헥사곤",          runtime:30, slot:1,     sec:30,    period:"4/18~4/24" },
-        { type:"서비스", name:"유니버셜 뮤직",  runtime:30, slot:1,     sec:30,    period:"4/1~4/11" },
-        { type:"일반", name:"유픽",           runtime:20, slot:1,     sec:20,    period:"4/17~4/19" },
-      ]
-    },
-    "26년 5월": {
-      total: 24.7, booked: 8.6, remain: 16.1,
-      list: [
-        { type:"일반", name:"라코스테",  runtime:30, slot:1.5, sec:45, period:"4/27~5/26" },
-        { type:"서비스", name:"유니버셜 뮤직", runtime:30, slot:1, sec:30, period:"" },
-      ]
-    },
-    "26년 6월": {
-      total: 24.7, booked: 2.7, remain: 22.0,
-      list: [
-        { type:"일반", name:"(미정)", runtime:30, slot:1, sec:30, period:"" },
-      ]
-    }
-  },
-  "커브드월 홍대": {
-    "26년 4월": {
-      total: 24.7, booked: 21.8, remain: 2.9,
-      list: [
-        { type:"일반",   name:"PCD",           runtime:30, slot:2,     sec:60, period:"" },
-        { type:"일반",   name:"하루틴",          runtime:30, slot:1,     sec:30, period:"3~6월" },
-        { type:"일반",   name:"라코스테",        runtime:30, slot:1.5,   sec:45, period:"4/27~5/26" },
-        { type:"일반",   name:"록시방",          runtime:30, slot:0.725, sec:21.75, period:"메시 0분" },
-        { type:"서비스", name:"NH투자증권",       runtime:30, slot:1,     sec:30, period:"4~5월" },
-        { type:"일반",   name:"(가부링)디아지오코리아", runtime:20, slot:1, sec:20, period:"5/11~6/10" },
-      ]
-    },
-    "26년 5월": {
-      total: 24.7, booked: 14.0, remain: 10.7,
-      list: [
-        { type:"일반",   name:"하루틴",          runtime:30, slot:1,   sec:30, period:"3~6월" },
-        { type:"일반",   name:"라코스테",        runtime:30, slot:1.5, sec:45, period:"4/27~5/26" },
-        { type:"서비스", name:"NH투자증권",       runtime:30, slot:1,   sec:30, period:"4~5월" },
-        { type:"일반",   name:"슬랙",           runtime:30, slot:1,   sec:30, period:"4/13~5/12" },
-        { type:"일반",   name:"(가부링)디아지오코리아", runtime:20, slot:1, sec:20, period:"5/11~6/10" },
-      ]
-    },
-    "26년 6월": {
-      total: 24.7, booked: 13.5, remain: 11.2,
-      list: [
-        { type:"일반",   name:"하루틴",    runtime:30, slot:1,   sec:30, period:"3~6월" },
-        { type:"서비스", name:"(예정)",    runtime:30, slot:0.5, sec:15, period:"" },
-        { type:"일반",   name:"(가부링)디아지오코리아", runtime:20, slot:1, sec:20, period:"5/11~6/10" },
-      ]
-    }
-  },
-  "어메이징 파르나스": {
-    "26년 4월": {
-      total: 22.2, booked: 17.8, remain: 4.4,
-      list: [
-        { type:"일반",   name:"버버리",   runtime:20, slot:1, sec:20, period:"" },
-        { type:"일반",   name:"하루틴",   runtime:30, slot:1, sec:30, period:"3~6월" },
-        { type:"일반",   name:"발렌티노", runtime:30, slot:1, sec:30, period:"" },
-      ]
-    },
-    "26년 5월": {
-      total: 22.2, booked: 6.5, remain: 15.7,
-      list: [
-        { type:"일반",   name:"하루틴",  runtime:30, slot:1, sec:30, period:"3~6월" },
-        { type:"서비스", name:"(예정)",  runtime:30, slot:2.5, sec:75, period:"" },
-      ]
-    },
-    "26년 6월": {
-      total: 22.2, booked: 3.2, remain: 19.0,
-      list: [
-        { type:"일반",   name:"하루틴",  runtime:30, slot:1,   sec:30, period:"3~6월" },
-        { type:"서비스", name:"(예정)",  runtime:30, slot:1.5, sec:45, period:"" },
-      ]
-    }
-  },
-  "T204": {
-    "26년 4월": {
-      total: 17.7, booked: 7.0, remain: 10.7,
-      list: [
-        { type:"일반", name:"(미정)",  runtime:30, slot:1, sec:30, period:"" },
-        { type:"서비스", name:"(예정)", runtime:30, slot:6, sec:180, period:"" },
-      ]
-    },
-    "26년 5월": {
-      total: 17.7, booked: 4.0, remain: 13.7,
-      list: [
-        { type:"일반",   name:"(미정)", runtime:30, slot:1, sec:30, period:"" },
-        { type:"서비스", name:"(예정)", runtime:30, slot:3, sec:90, period:"" },
-      ]
-    },
-    "26년 6월": {
-      total: 17.7, booked: 7.5, remain: 10.2,
-      list: [
-        { type:"일반",   name:"(확정 예정)", runtime:30, slot:5.5, sec:165, period:"" },
-        { type:"서비스", name:"(예정)",      runtime:30, slot:2,   sec:60,  period:"" },
-      ]
-    }
-  },
-  "KT Square": {
-    "26년 4월": {
-      total: null, booked: 5.0, remain: null,
-      list: [
-        { type:"일반", name:"(KT 자사)", runtime:30, slot:5, sec:150, period:"" },
-      ]
-    },
-    "26년 5월": {
-      total: null, booked: 7.0, remain: null,
-      list: [
-        { type:"일반", name:"(KT 자사)", runtime:30, slot:7, sec:210, period:"" },
-      ]
-    },
-    "26년 6월": {
-      total: null, booked: 3.0, remain: null,
-      list: [
-        { type:"일반", name:"(KT 자사)", runtime:30, slot:3, sec:90, period:"" },
-      ]
-    }
-  },
-  "SB타워": {
-    "26년 4월": {
-      total: 17.3, booked: 2.0, remain: 15.3,
-      list: [
-        { type:"일반", name:"(미확정)", runtime:30, slot:2, sec:60, period:"" },
-      ]
-    },
-    "26년 5월": {
-      total: 17.3, booked: 0.0, remain: 17.3,
-      list: []
-    },
-    "26년 6월": {
-      total: 17.3, booked: 6.0, remain: 11.3,
-      list: [
-        { type:"일반", name:"(확정 예정)", runtime:30, slot:6, sec:180, period:"" },
-      ]
-    }
-  }
-};
-
-/* ═══════════════════════════════════════════
-   State
-═══════════════════════════════════════════ */
-const MONTHS = Object.keys(SUMMARY);
-let activeMonth = MONTHS[0];
+let SUMMARY = {};
+let ADVERTISERS = {};
+let MONTHS = [];
+let activeMonth = "";
 let panelMedia = null;
-let panelMonth = MONTHS[0];
+let panelMonth = "";
 const chartInstances = {};
 
 /* ═══════════════════════════════════════════
-   Helpers
+   FETCH DATA
+═══════════════════════════════════════════ */
+function showLoading() {
+  document.getElementById('cardGrid').innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--text3)">
+      <div class="spinner"></div>
+      <p style="margin-top:1rem;font-size:13px">시트에서 데이터를 불러오는 중...</p>
+    </div>`;
+}
+
+function showError(msg) {
+  document.getElementById('cardGrid').innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--danger)">
+      <p style="font-size:13px">⚠ 데이터를 불러오지 못했어요</p>
+      <p style="font-size:11px;margin-top:6px;color:var(--text3)">${msg}</p>
+    </div>`;
+}
+
+async function loadData() {
+  showLoading();
+  try {
+    const res = await fetch(GAS_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+
+    SUMMARY     = json.summary     || {};
+    ADVERTISERS = json.advertisers || {};
+    MONTHS      = Object.keys(SUMMARY);
+    activeMonth = MONTHS[0] || "";
+    panelMonth  = activeMonth;
+
+    // 주차 라벨 업데이트
+    const badge = document.querySelector('.week-badge');
+    if (json.weekLabel) {
+      badge.textContent = json.weekLabel;
+    } else {
+      // weekLabel 없으면 summary 마지막 키에서 추출
+      const months = Object.keys(json.summary || {});
+      if (months.length) badge.textContent = months[months.length - 1] + ' 기준';
+    }
+
+    render();
+  } catch (e) {
+    showError(e.message);
+    console.error(e);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS
 ═══════════════════════════════════════════ */
 function getStatus(pct) {
-  if (pct === null) return 'neutral';
+  if (pct === null || pct === undefined) return 'neutral';
   if (pct >= 70) return 'ok';
   if (pct >= 40) return 'warn';
   return 'danger';
 }
 function getColors(pct) {
-  if (pct === null || pct >= 70) return { paid:'#0c9060', svc:'#6dcca8', remain:'#e4e7ef' };
-  if (pct >= 40)                  return { paid:'#b87200', svc:'#e8b94a', remain:'#e4e7ef' };
-  return                                  { paid:'#d63c3c', svc:'#f0a0a0', remain:'#e4e7ef' };
+  // 유가: 파랑 계열 (좋은 것), 서비스: 주황 계열 (중립/경고), 잔여: 회색
+  return { paid:'#3a6af8', svc:'#f0a500', remain:'#e4e7ef' };
 }
 
 /* ═══════════════════════════════════════════
-   Render — Main Dashboard
+   RENDER — Main Dashboard
 ═══════════════════════════════════════════ */
 function renderMonthTabs() {
   document.getElementById('monthTabs').innerHTML = MONTHS.map(m =>
@@ -587,27 +417,20 @@ function renderMonthTabs() {
 }
 
 function renderAlerts(data) {
-  const high = data.filter(d => d.remain !== null && d.remain >= 10 && d.bookPct !== null && d.bookPct < 40);
-  const mid  = data.filter(d => d.remain !== null && d.remain >= 5  && d.bookPct !== null && d.bookPct < 60 && !high.includes(d));
+  // 유가부킹률 = 유가구좌 / 상업총재원
+  const withPaidPct = data.map(d => ({
+    ...d,
+    paidPct: (d.comTotal && d.paid != null) ? d.paid / d.comTotal * 100 : null
+  }));
+  const high = withPaidPct.filter(d => d.remain !== null && d.remain >= 10 && d.paidPct !== null && d.paidPct < 40);
+  const mid  = withPaidPct.filter(d => d.remain !== null && d.remain >= 5  && d.paidPct !== null && d.paidPct < 60 && !high.includes(d));
   document.getElementById('alerts').innerHTML = [
-    ...high.map(d => `<div class="alert-item alert-high"><span class="alert-dot"></span><span class="alert-text">⚠ ${d.name} — 잔여 ${d.remain}구좌 (부킹률 ${d.bookPct}%) 재원 확보 필요</span></div>`),
-    ...mid.map(d  => `<div class="alert-item alert-mid"><span class="alert-dot"></span><span class="alert-text">${d.name} — 잔여 ${d.remain}구좌 (부킹률 ${d.bookPct}%) 주의 필요</span></div>`)
+    ...high.map(d => `<div class="alert-item alert-high"><span class="alert-dot"></span><span class="alert-text">⚠ ${d.name} — 잔여 ${d.remain}구좌 (유가율 ${d.paidPct.toFixed(1)}%) 재원 확보 필요</span></div>`),
+    ...mid.map(d  => `<div class="alert-item alert-mid"><span class="alert-dot"></span><span class="alert-text">${d.name} — 잔여 ${d.remain}구좌 (유가율 ${d.paidPct.toFixed(1)}%) 주의 필요</span></div>`)
   ].join('');
 }
 
-function renderSummary(data) {
-  const valid = data.filter(d => d.comTotal !== null);
-  const totalCom    = valid.reduce((s,d) => s + d.comTotal, 0);
-  const totalBooked = valid.reduce((s,d) => s + d.booked, 0);
-  const totalRemain = valid.reduce((s,d) => s + (d.remain||0), 0);
-  const avgPct = totalCom > 0 ? Math.round(totalBooked / totalCom * 100) : 0;
-  document.getElementById('summaryRow').innerHTML = `
-    <div class="sum-card"><div class="sum-label">상업 총 재원</div><div class="sum-val">${totalCom.toFixed(1)}<span class="sum-unit"> 구좌</span></div></div>
-    <div class="sum-card"><div class="sum-label">부킹 완료</div><div class="sum-val">${totalBooked.toFixed(1)}<span class="sum-unit"> 구좌</span></div></div>
-    <div class="sum-card"><div class="sum-label">잔여 재원</div><div class="sum-val">${totalRemain.toFixed(1)}<span class="sum-unit"> 구좌</span></div></div>
-    <div class="sum-card"><div class="sum-label">평균 부킹률</div><div class="sum-val">${avgPct}<span class="sum-unit">%</span></div></div>
-  `;
-}
+
 
 function destroyCharts() {
   Object.values(chartInstances).forEach(c => c.destroy());
@@ -618,11 +441,25 @@ function renderCards(data) {
   destroyCharts();
   const grid = document.getElementById('cardGrid');
   grid.innerHTML = data.map((d, i) => {
-    const st = getStatus(d.bookPct);
-    const pctDisp = d.bookPct !== null ? d.bookPct.toFixed(1) + '%' : '-';
+    const col = getColors(d.bookPct);
+
+    // 유가 부킹률 = 유가구좌 / 상업총재원
+    const paidPct = (d.comTotal && d.paid != null)
+      ? (d.paid / d.comTotal * 100)
+      : null;
+    const paidPctDisp = paidPct !== null ? paidPct.toFixed(1) + '%' : '-';
+
+    // 전체 부킹률 (도넛 하단 소표시용)
+    const totalPctDisp = d.bookPct !== null && d.bookPct !== undefined
+      ? '전체 ' + Number(d.bookPct).toFixed(1) + '%'
+      : '';
+
+    // 카드 상태는 유가부킹률 기준
+    const st = getStatus(paidPct);
+    const remainDisp = d.remain !== null && d.remain !== undefined ? d.remain + '구좌' : '-';
     const badgeMap = { ok:['badge-ok','양호'], warn:['badge-warn','주의'], danger:['badge-danger','부족'], neutral:['',''] };
     const [badgeCls, badgeTxt] = badgeMap[st];
-    const remainDisp = d.remain !== null ? d.remain + '구좌' : '-';
+
     return `
       <div class="media-card status-${st}" onclick="openPanel('${d.name}')">
         ${badgeTxt ? `<span class="status-badge ${badgeCls}">${badgeTxt}</span>` : ''}
@@ -630,21 +467,22 @@ function renderCards(data) {
         <div class="donut-wrap">
           <canvas id="chart_${i}" width="120" height="120"></canvas>
           <div class="donut-center">
-            <div class="donut-pct">${pctDisp}</div>
-            <div class="donut-label">부킹률</div>
+            <div class="donut-pct">${paidPctDisp}</div>
+            <div class="donut-label">유가율</div>
+            ${totalPctDisp ? `<div class="donut-total">${totalPctDisp}</div>` : ''}
           </div>
         </div>
         <div class="legend">
           <div class="legend-item">
-            <span class="legend-left"><span class="legend-dot" style="background:#0c9060"></span><span class="legend-key">유가</span></span>
-            <span class="legend-val">${d.paid}구좌</span>
+            <span class="legend-left"><span class="legend-dot" style="background:${col.paid}"></span><span class="legend-key">유가</span></span>
+            <span class="legend-val">${d.paid ?? 0}구좌</span>
           </div>
           <div class="legend-item">
-            <span class="legend-left"><span class="legend-dot" style="background:#6dcca8"></span><span class="legend-key">서비스</span></span>
-            <span class="legend-val">${d.svc}구좌</span>
+            <span class="legend-left"><span class="legend-dot" style="background:${col.svc}"></span><span class="legend-key">서비스</span></span>
+            <span class="legend-val">${d.svc ?? 0}구좌</span>
           </div>
           <div class="legend-item">
-            <span class="legend-left"><span class="legend-dot" style="background:#e4e7ef"></span><span class="legend-key">잔여</span></span>
+            <span class="legend-left"><span class="legend-dot" style="background:${col.remain};border:1px solid #d0d4de"></span><span class="legend-key">잔여</span></span>
             <span class="legend-val">${remainDisp}</span>
           </div>
         </div>
@@ -657,9 +495,9 @@ function renderCards(data) {
     data.forEach((d, i) => {
       const canvas = document.getElementById(`chart_${i}`);
       if (!canvas) return;
-      const col = getColors(d.bookPct);
-      const remainVal = d.remain !== null ? d.remain : 0;
-      const vals = d.comTotal !== null ? [d.paid, d.svc, remainVal] : [d.paid, d.svc, 0];
+      const col      = getColors(d.bookPct);
+      const remainVal = d.remain != null ? d.remain : 0;
+      const vals = d.comTotal != null ? [d.paid||0, d.svc||0, remainVal] : [d.paid||0, d.svc||0, 0];
       chartInstances[`chart_${i}`] = new Chart(canvas, {
         type: 'doughnut',
         data: {
@@ -683,28 +521,28 @@ function renderCards(data) {
 }
 
 /* ═══════════════════════════════════════════
-   Render — Slide Panel
+   RENDER — Slide Panel
 ═══════════════════════════════════════════ */
 function renderPanel() {
   if (!panelMedia) return;
   const mediaData = ADVERTISERS[panelMedia];
-  if (!mediaData) return;
 
-  // Header
   document.getElementById('panelEyebrow').textContent = '광고주 현황';
-  document.getElementById('panelTitle').textContent = panelMedia;
+  document.getElementById('panelTitle').textContent   = panelMedia;
 
-  // Month tabs inside panel
   document.getElementById('panelMonthTabs').innerHTML = MONTHS.map(m =>
     `<button class="panel-tab${m===panelMonth?' active':''}" onclick="setPanelMonth('${m}')">${m}</button>`
   ).join('');
 
-  // Summary chips
-  const mData = mediaData[panelMonth] || { total:null, booked:0, remain:null, list:[] };
+  const mData = mediaData && mediaData[panelMonth]
+    ? mediaData[panelMonth]
+    : { total:null, booked:0, remain:null, list:[] };
+
   const bookedPct = mData.total ? (mData.booked / mData.total * 100).toFixed(1) : null;
-  const pctCls = bookedPct === null ? '' : bookedPct >= 70 ? 'ok' : bookedPct >= 40 ? 'warn' : 'danger';
-  const normalCount = mData.list.filter(a => a.type === '일반').reduce((s,a) => s + a.slot, 0);
-  const svcCount    = mData.list.filter(a => a.type === '서비스').reduce((s,a) => s + a.slot, 0);
+  const pctCls    = bookedPct === null ? '' : bookedPct >= 70 ? 'ok' : bookedPct >= 40 ? 'warn' : 'danger';
+  const list      = mData.list || [];
+  const normalSlot = list.filter(a => a.type === '일반').reduce((s,a) => s + (a.slot||0), 0);
+  const svcSlot    = list.filter(a => a.type === '서비스').reduce((s,a) => s + (a.slot||0), 0);
 
   document.getElementById('panelSummary').innerHTML = `
     <div class="p-chip">
@@ -713,28 +551,25 @@ function renderPanel() {
     </div>
     <div class="p-chip">
       <div class="p-chip-label">유가 구좌</div>
-      <div class="p-chip-val ok">${normalCount.toFixed(2).replace(/\.?0+$/,'')}</div>
+      <div class="p-chip-val ok">${Number(normalSlot).toFixed(2).replace(/\.?0+$/, '')}</div>
     </div>
     <div class="p-chip">
       <div class="p-chip-label">서비스 구좌</div>
-      <div class="p-chip-val">${svcCount.toFixed(2).replace(/\.?0+$/,'')}</div>
+      <div class="p-chip-val">${Number(svcSlot).toFixed(2).replace(/\.?0+$/, '')}</div>
     </div>
   `;
 
-  // Advertiser list
-  const body = document.getElementById('panelBody');
-  const list = mData.list || [];
+  const body     = document.getElementById('panelBody');
+  const normals  = list.filter(a => a.type === '일반');
+  const services = list.filter(a => a.type === '서비스');
 
   if (list.length === 0) {
     body.innerHTML = `<div class="empty-state">등록된 광고주가 없습니다</div>`;
     return;
   }
 
-  const normals  = list.filter(a => a.type === '일반');
-  const services = list.filter(a => a.type === '서비스');
-
   function renderRows(items) {
-    if (items.length === 0) return '<div style="font-size:12px;color:var(--text3);padding:6px 10px;">-</div>';
+    if (!items.length) return '<div style="font-size:12px;color:var(--text3);padding:6px 10px;">-</div>';
     return `
       <div class="adv-row header-row">
         <span>광고주</span><span style="text-align:center">RT</span><span style="text-align:center">구좌</span><span style="text-align:right">기간</span>
@@ -779,22 +614,21 @@ function setPanelMonth(m) {
 }
 
 /* ═══════════════════════════════════════════
-   Main Render
+   MAIN
 ═══════════════════════════════════════════ */
 function render() {
+  if (!activeMonth || !SUMMARY[activeMonth]) return;
   const data = SUMMARY[activeMonth];
   renderMonthTabs();
   renderAlerts(data);
-  renderSummary(data);
   renderCards(data);
 }
 
 function setMonth(m) { activeMonth = m; render(); }
 
-// ESC key to close panel
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
-render();
+loadData();
 </script>
 </body>
 </html>
