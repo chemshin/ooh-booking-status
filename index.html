@@ -459,7 +459,7 @@ function renderCards(data) {
 
     // 카드 상태는 전체 부킹률 기준
     const st = getStatus(d.bookPct);
-    const remainDisp = d.remain !== null && d.remain !== undefined ? d.remain + '구좌' : '-';
+    const remainDisp = d.remain !== null && d.remain !== undefined ? (Math.round(d.remain*10)/10) + '구좌' : '-';
     const badgeMap = { soldout:['badge-soldout','마감'], limited:['badge-limited','임박'], normal:['badge-normal','보통'], available:['badge-available','여유'], neutral:['',''] };
     const [badgeCls, badgeTxt] = badgeMap[st];
 
@@ -478,11 +478,11 @@ function renderCards(data) {
         <div class="legend">
           <div class="legend-item">
             <span class="legend-left"><span class="legend-dot" style="background:${col.paid}"></span><span class="legend-key">유가</span></span>
-            <span class="legend-val">${d.paid ?? 0}구좌</span>
+            <span class="legend-val">${d.paid != null ? Math.round(d.paid*10)/10 : 0}구좌</span>
           </div>
           <div class="legend-item">
             <span class="legend-left"><span class="legend-dot" style="background:${col.svc}"></span><span class="legend-key">서비스</span></span>
-            <span class="legend-val">${d.svc ?? 0}구좌</span>
+            <span class="legend-val">${d.svc != null ? Math.round(d.svc*10)/10 : 0}구좌</span>
           </div>
           <div class="legend-item">
             <span class="legend-left"><span class="legend-dot" style="background:${col.remain};border:1px solid #d0d4de"></span><span class="legend-key">잔여</span></span>
@@ -541,11 +541,11 @@ function renderPanel() {
     ? mediaData[panelMonth]
     : { total:null, booked:0, remain:null, list:[] };
 
-  const bookedPct = mData.total ? (mData.booked / mData.total * 100).toFixed(1) : null;
+  const bookedPct = mData.comTotal ? (mData.booked / mData.comTotal * 100).toFixed(1) : null;
   const pctCls    = bookedPct === null ? '' : bookedPct >= 70 ? 'ok' : bookedPct >= 40 ? 'warn' : 'danger';
   const list      = mData.list || [];
-  const normalSlot = list.filter(a => a.type === '일반').reduce((s,a) => s + (a.slot||0), 0);
-  const svcSlot    = list.filter(a => a.type === '서비스').reduce((s,a) => s + (a.slot||0), 0);
+  const normalSlot = mData.paid != null ? mData.paid : list.filter(a => a.type === '일반').reduce((s,a) => s + (a.slot||0), 0);
+  const svcSlot    = mData.svc  != null ? mData.svc  : list.filter(a => a.type === '서비스').reduce((s,a) => s + (a.slot||0), 0);
 
   document.getElementById('panelSummary').innerHTML = `
     <div class="p-chip">
