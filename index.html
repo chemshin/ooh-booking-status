@@ -28,7 +28,7 @@
   --radius: 14px;
   --font: 'Noto Sans KR', sans-serif;
   --mono: 'DM Mono', monospace;
-  --panel-width: 480px;
+  --panel-width: min(96vw, 1080px);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -58,6 +58,7 @@ header {
   text-transform: uppercase; font-family: var(--mono);
 }
 header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+
 .week-badge {
   font-family: var(--mono); font-size: 11px;
   color: var(--text2); background: var(--bg3);
@@ -88,19 +89,8 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 }
 
 /* ── Alerts ── */
-.alerts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.75rem; }
-.alert-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; border-radius: 8px; border: 1px solid;
-  animation: fadeIn .3s ease;
-}
-.alert-high { background: var(--danger-bg); border-color: rgba(255,87,87,0.3); color: #ff8a8a; }
 .alert-mid  { background: var(--warn-bg);   border-color: rgba(240,165,0,0.3);  color: #f0c060; }
-.alert-dot  { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.alert-high .alert-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
-.alert-mid  .alert-dot { background: var(--warn);   box-shadow: 0 0 6px var(--warn); }
-.alert-text { font-size: 12.5px; font-weight: 500; }
-
+.alert-high .alert-mid  
 
 
 /* ── Section ── */
@@ -129,94 +119,12 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 }
 
 /* ── Townboard Grid ── */
-.townboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: 16px;
-}
-.tb-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 1.25rem;
-  cursor: pointer;
-  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-}
-.tb-card:hover {
-  transform: translateY(-3px); border-color: var(--border2);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
-}
-.tb-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px;
-}
-.tb-name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
-.tb-month-pill {
-  font-size: 11px; padding: 3px 10px; border-radius: 12px;
-  background: var(--bg3); color: var(--text2);
-  font-family: var(--mono);
-}
-.tb-summary {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px; margin-bottom: 14px;
-}
-.tb-stat {
-  background: var(--bg3); border-radius: 10px; padding: 10px 12px;
-  text-align: center;
-}
-.tb-stat-label {
-  font-size: 10px; color: var(--text3);
-  letter-spacing: .04em; margin-bottom: 4px;
-}
-.tb-stat-val {
-  font-size: 18px; font-weight: 700; font-family: var(--mono);
-  letter-spacing: -.02em;
-}
-.tb-stat-val.accent { color: var(--accent); }
 .tb-stat-val.ok     { color: var(--ok); }
 .tb-stat-val.warn   { color: var(--warn); }
 
 /* 패키지 표 (전국F/A/B, 수도권F/A/B) */
-.tb-pkg-table {
-  width: 100%; font-size: 11.5px;
-  border-collapse: collapse;
-}
-.tb-pkg-table th {
-  font-size: 10px; color: var(--text3); font-weight: 500;
-  text-align: left; padding: 6px 8px;
-  letter-spacing: .04em; text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
-.tb-pkg-table th:not(:first-child) { text-align: right; }
-.tb-pkg-table td {
-  padding: 7px 8px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--mono);
-}
-.tb-pkg-table td:first-child { font-family: var(--font); color: var(--text2); }
-.tb-pkg-table td:not(:first-child) { text-align: right; }
-.tb-pkg-table tr.tb-total td {
-  font-weight: 700; color: var(--text); border-top: 1px solid var(--border2);
-  border-bottom: none;
-}
 
 /* A/B 그룹 표시 */
-.tb-groups {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-}
-.tb-group {
-  background: var(--bg3); border-radius: 10px; padding: 10px 12px;
-  text-align: center;
-}
-.tb-group-name { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
-.tb-group-pct {
-  font-size: 16px; font-weight: 700; font-family: var(--mono);
-}
-.tb-group-pct.over { color: var(--accent); }
-.tb-group-detail {
-  font-size: 10px; color: var(--text3); margin-top: 3px; font-family: var(--mono);
-}
 
 /* ── Card Grid ── */
 .card-grid {
@@ -233,6 +141,23 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
   animation: fadeIn .4s ease;
 }
 .media-card:hover { transform: translateY(-3px); border-color: var(--border2); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+/* ── 범례 하위 항목 (유가/서비스) ── */
+.legend-item.sub {
+  padding-left: 14px;
+  font-size: 10.5px;
+  opacity: 0.88;
+}
+.legend-key.sub, .legend-val.sub {
+  font-size: 10.5px;
+  color: var(--text2);
+  font-weight: 400;
+}
+.legend-sub-dot {
+  width: 8px; height: 8px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
 .media-card.status-excellent { border-color: rgba(58,106,248,0.30); }
 .media-card.status-good      { border-color: rgba(14,144,96,0.25); }
 .media-card.status-normal    { border-color: rgba(150,150,150,0.20); }
@@ -348,6 +273,97 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 .p-chip { background: var(--bg3); border-radius: 8px; padding: 8px 10px; text-align: center; }
 .p-chip-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; letter-spacing: .04em; text-transform: uppercase; }
 .p-chip-val { font-size: 15px; font-weight: 700; font-family: var(--mono); }
+
+/* ── 패널 스택 막대 그래프 ── */
+.panel-bar-wrap {
+  grid-column: 1 / -1;  /* panel-summary grid 전체 차지 */
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 14px 16px;
+  background: var(--bg3); border-radius: 12px;
+}
+.panel-bar-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px;
+}
+.panel-bar-pct {
+  display: flex; align-items: baseline; gap: 8px;
+}
+.panel-bar-pct-label {
+  font-size: 11px; color: var(--text3); font-weight: 500;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.panel-bar-pct-val {
+  font-size: 22px; font-weight: 700; font-family: var(--mono);
+  letter-spacing: -.02em;
+}
+.panel-bar-pct-val.ok     { color: var(--ok); }
+.panel-bar-pct-val.warn   { color: var(--warn); }
+.panel-bar-pct-val.danger { color: var(--danger); }
+.panel-bar-total {
+  font-size: 12px; color: var(--text2); font-family: var(--mono);
+}
+.panel-bar-total strong { color: var(--text); font-weight: 700; margin-right: 4px; }
+
+.panel-bar {
+  display: flex; height: 32px;
+  border-radius: 8px; overflow: hidden;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+}
+.panel-bar-fill,
+.panel-bar-service,
+.panel-bar-remain {
+  display: flex; align-items: center; justify-content: center;
+  height: 100%;
+  color: #fff;
+  font-size: 12.5px; font-weight: 700; font-family: var(--mono);
+  letter-spacing: -.01em;
+  min-width: 0;
+  transition: width .5s ease;
+  position: relative;
+}
+/* 일반 (유가) — 파랑 */
+.panel-bar-fill {
+  background: linear-gradient(180deg, #5b87ff 0%, #3a6af8 100%);
+}
+.panel-bar-fill::after {
+  content: '일반';
+  position: absolute;
+  font-size: 9px; font-weight: 500;
+  opacity: 0.9;
+  top: 3px; right: 6px;
+  letter-spacing: 0.04em;
+}
+/* 서비스 — 주황 */
+.panel-bar-service {
+  background: linear-gradient(180deg, #f5b232 0%, #f0a500 100%);
+}
+.panel-bar-service::after {
+  content: '서비스';
+  position: absolute;
+  font-size: 9px; font-weight: 500;
+  opacity: 0.9;
+  top: 3px; right: 6px;
+  letter-spacing: 0.04em;
+}
+/* 잔여 — 회색 배경 */
+.panel-bar-remain {
+  background: var(--bg);
+  color: var(--text2);
+}
+.panel-bar-remain::after {
+  content: '잔여';
+  position: absolute;
+  font-size: 9px; font-weight: 500;
+  opacity: 0.7;
+  top: 3px; right: 6px;
+  letter-spacing: 0.04em;
+}
+.panel-bar-val-text {
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0 6px;
+}
 .p-chip-val.ok { color: var(--ok); }
 .p-chip-val.warn { color: var(--warn); }
 .p-chip-val.danger { color: var(--danger); }
@@ -388,6 +404,138 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 .adv-runtime { font-size: 11px; color: var(--text2); font-family: var(--mono); text-align: center; }
 .adv-slot { font-size: 12px; font-weight: 700; font-family: var(--mono); text-align: center; }
 .adv-period { font-size: 10px; color: var(--text3); font-family: var(--mono); text-align: right; }
+
+/* ── 편성표 (간트 차트) ── */
+.schedule-wrap {
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg2);
+  overflow: hidden;
+}
+.schedule-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.schedule-scroll::-webkit-scrollbar { height: 6px; }
+.schedule-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 6px; }
+
+.schedule-table {
+  display: grid;
+  grid-template-columns: 130px repeat(31, 1fr);
+  font-size: 11px;
+  min-width: 880px;
+  width: 100%;
+}
+.sch-cell {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 4px 0;
+  text-align: center;
+  font-family: var(--mono);
+  color: var(--text3);
+  background: var(--bg2);
+}
+.sch-cell.first { border-left: 0; }
+.sch-cell.day-header {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg3);
+  position: sticky; top: 0;
+  padding: 6px 0;
+}
+.sch-cell.day-header.weekend { color: var(--danger); }
+.sch-cell.day-header.saturday { color: var(--accent); }
+.sch-cell.name {
+  text-align: left;
+  padding: 6px 10px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--bg2);
+  position: sticky; left: 0;
+  z-index: 1;
+  border-right: 1px solid var(--border2);
+}
+.sch-cell.name.normal-type { color: var(--text); }
+.sch-cell.name.service-type { color: var(--text2); }
+.sch-day {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  height: 28px;
+  position: relative;
+}
+.sch-day.weekend { background: rgba(214,60,60,0.03); }
+.sch-day.today { background: rgba(58,106,248,0.08); }
+
+.sch-bar {
+  position: absolute;
+  /* top/bottom은 구좌수에 따라 인라인 style로 설정 */
+  left: 0; right: 0;
+  background: var(--accent);
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(58,106,248,0.2);
+}
+
+/* ── 광고주명 옆 구좌 뱃지 ── */
+.sch-name-wrap {
+  display: flex; align-items: center; gap: 6px;
+  overflow: hidden;
+}
+.sch-name-text {
+  flex: 1; min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.slot-badge {
+  flex-shrink: 0;
+  font-size: 9.5px;
+  font-family: var(--mono);
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(58,106,248,0.10);
+  color: var(--accent);
+  line-height: 1;
+}
+.slot-badge.half {
+  background: rgba(150,150,150,0.15);
+  color: var(--text3);
+}
+.slot-badge.large {
+  background: rgba(214,60,60,0.10);
+  color: var(--danger);
+}
+.slot-badge.svc {
+  background: rgba(240,165,0,0.15);
+  color: var(--warn);
+}
+.sch-bar.type-normal { background: #3a6af8; }
+.sch-bar.type-service { background: #f0a500; }
+.sch-bar.type-package { background: #9966ff; }
+.sch-bar.type-sponsor { background: #14a085; }
+.sch-bar.type-barter  { background: #888; }
+.sch-bar.start { border-top-left-radius: 6px; border-bottom-left-radius: 6px; left: 3px; }
+.sch-bar.end   { border-top-right-radius: 6px; border-bottom-right-radius: 6px; right: 3px; }
+
+.sch-section-title {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px 8px;
+  font-size: 11px; font-weight: 600;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.sch-empty {
+  padding: 24px 12px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text3);
+}
 .type-badge {
   display: inline-block; font-size: 9px; padding: 2px 5px;
   border-radius: 4px; font-weight: 700; margin-right: 4px; vertical-align: middle;
@@ -421,8 +569,7 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 @media (max-width: 768px) {
   .section-header { flex-wrap: wrap; }
   .section-desc { width: 100%; margin-left: 0; margin-top: 4px; font-size: 11px; }
-  .townboard-grid { grid-template-columns: 1fr; }
-}
+  }
 @media (max-width: 640px) {
   body { padding: 1.25rem 1rem 3rem; }
   .summary-row { grid-template-columns: repeat(2,1fr); }
@@ -430,6 +577,88 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
   header h1 { font-size: 18px; }
   :root { --panel-width: 100vw; }
 }
+
+
+
+/* ── 라이트박스 & 아트월 표 ── */
+.lb-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.lb-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.lb-scroll::-webkit-scrollbar { height: 6px; }
+.lb-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 6px; }
+
+.lb-table {
+  display: grid;
+  grid-template-columns: 110px 220px repeat(12, minmax(80px, 1fr));
+  min-width: 1300px;
+  font-size: 11.5px;
+}
+.lb-cell {
+  padding: 8px 10px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lb-cell.header {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg3);
+  color: var(--text2);
+  text-align: center;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.lb-cell.header.weekend { color: var(--danger); }
+.lb-cell.category {
+  background: var(--bg3);
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  border-right: 1px solid var(--border2);
+}
+.lb-cell.media {
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg2);
+  border-right: 1px solid var(--border2);
+}
+.lb-cell.value {
+  color: var(--text);
+  font-size: 11px;
+  text-align: center;
+  background: var(--bg2);
+}
+.lb-cell.value.has-ad {
+  background: rgba(58,106,248,0.06);
+  color: var(--accent);
+  font-weight: 500;
+}
+.lb-cell.value.completed {
+  background: rgba(14,144,96,0.07);
+  color: var(--ok);
+}
+.lb-cell.value.tentative {
+  background: rgba(240,165,0,0.07);
+  color: var(--warn);
+}
+.lb-cell.value.note {
+  background: rgba(150,150,150,0.06);
+  color: var(--text3);
+  font-style: italic;
+  white-space: normal;
+  text-align: left;
+}
+
 </style>
 </head>
 <body>
@@ -443,7 +672,6 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 </header>
 
 <div class="month-tabs" id="monthTabs"></div>
-<div class="alerts" id="alerts"></div>
 
 <div class="section-block">
   <div class="section-header">
@@ -457,10 +685,10 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 <div class="section-block">
   <div class="section-header">
     <span class="section-num">02</span>
-    <h2 class="section-title-large">타운보드</h2>
-    <span class="section-desc">패키지 송출 현황 — 카드 클릭 시 광고주 리스트 확인</span>
+    <h2 class="section-title-large">라이트박스 &amp; 아트월</h2>
+    <span class="section-desc">매체별 월간 운영 현황</span>
   </div>
-  <div class="townboard-grid" id="townboardGrid"></div>
+  <div id="lightboxSection"></div>
 </div>
 
 <!-- Overlay -->
@@ -481,6 +709,7 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 </div>
 
 <script>
+
 /* ═══════════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════════ */
@@ -614,23 +843,6 @@ function renderMonthTabs() {
   });
 }
 
-function renderAlerts(data) {
-
-  // 시점 기반 5단계 평가 → critical/bad만 알람으로 노출
-  // (매체를 파는 입장: 잔여가 많으면 위험. 시점이 가까울수록 더 가혹)
-  const monthsAhead = getMonthsAhead(activeMonth);
-  const withStatus = data.map(d => ({ ...d, st: getStatus(d.bookPct, monthsAhead) }));
-
-  const critical = withStatus.filter(d => d.st === 'critical');
-  const bad      = withStatus.filter(d => d.st === 'bad');
-
-  const monthLabel = monthsAhead === 0 ? '이번 달' : monthsAhead === 1 ? '다음 달' : `${monthsAhead}달 뒤`;
-
-  document.getElementById('alerts').innerHTML = [
-    ...critical.map(d => `<div class="alert-item alert-high"><span class="alert-dot"></span><span class="alert-text">⚠ 매우 나쁨 — ${d.name} 잔여 ${(d.remain ?? 0)}구좌 (부킹률 ${Number(d.bookPct).toFixed(1)}%, ${monthLabel})</span></div>`),
-    ...bad.map(d      => `<div class="alert-item alert-mid"><span class="alert-dot"></span><span class="alert-text">○ 나쁨 — ${d.name} 잔여 ${(d.remain ?? 0)}구좌 (부킹률 ${Number(d.bookPct).toFixed(1)}%, ${monthLabel})</span></div>`)
-  ].join('');
-}
 
 
 
@@ -641,33 +853,103 @@ function destroyCharts() {
 
 function renderCards(data) {
   destroyCharts();
+
+  // ── 카드용: 월 15일 이상 운영 광고만 포함한 paid/svc 재계산 ──
+  const cardMonthMatch = activeMonth.match(/(\d{1,2})월/);
+  const cardTargetMonth = cardMonthMatch ? parseInt(cardMonthMatch[1]) : (new Date().getMonth() + 1);
+  const cardTargetYear  = 2026;
+  const cardMonthDays   = new Date(cardTargetYear, cardTargetMonth, 0).getDate();
+
+  function cardActiveDays(periodStr) {
+    if (!periodStr || !String(periodStr).trim()) return cardMonthDays;
+    const segments = String(periodStr).split(/,/).map(s => s.trim()).filter(Boolean);
+    let total = 0;
+    let anyValidFormat = false;
+    segments.forEach(seg => {
+      const monthRange = seg.match(/^(\d{1,2})\s*~\s*(\d{1,2})\s*월?$/);
+      if (monthRange) {
+        anyValidFormat = true;
+        const sm = parseInt(monthRange[1]);
+        const em = parseInt(monthRange[2]);
+        if (cardTargetMonth >= sm && cardTargetMonth <= em) total += cardMonthDays;
+        return;
+      }
+      const parts = seg.split(/~/);
+      if (parts.length !== 2) return;
+      const parseDate = (str) => {
+        const m = str.trim().match(/^(?:(\d{2,4})\/)?(\d{1,2})\/(\d{1,2})$/);
+        if (!m) return null;
+        let y = m[1] ? parseInt(m[1]) : cardTargetYear;
+        if (y < 100) y += 2000;
+        return new Date(y, parseInt(m[2]) - 1, parseInt(m[3]));
+      };
+      const s = parseDate(parts[0]);
+      const e = parseDate(parts[1]);
+      if (!s || !e) return;
+      anyValidFormat = true;
+      const monthStart = new Date(cardTargetYear, cardTargetMonth - 1, 1);
+      const monthEnd   = new Date(cardTargetYear, cardTargetMonth, 0);
+      if (e < monthStart || s > monthEnd) return;
+      const segStart = s >= monthStart ? s : monthStart;
+      const segEnd   = e <= monthEnd   ? e : monthEnd;
+      total += Math.floor((segEnd - segStart) / 86400000) + 1;
+    });
+    if (!anyValidFormat) return cardMonthDays;
+    return total;
+  }
+
+  function recalcPaidSvc(mediaName) {
+    const advData = ADVERTISERS && ADVERTISERS[mediaName] && ADVERTISERS[mediaName][activeMonth];
+    const list = (advData && advData.list) || [];
+    if (!list.length) return null;
+    const filtered = list.filter(a => cardActiveDays(a.period) >= 15);
+    const paid = filtered
+      .filter(a => a.type === '일반' || a.type === '패키지' || a.type === '협찬' || a.type === '바터')
+      .reduce((s, a) => s + (Number(a.slot) || 0), 0);
+    const svc = filtered
+      .filter(a => a.type === '서비스' || a.type === '타운보드(서비스)')
+      .reduce((s, a) => s + (Number(a.slot) || 0), 0);
+    return { paid: Math.round(paid * 10) / 10, svc: Math.round(svc * 10) / 10 };
+  }
+
   const grid = document.getElementById('cardGrid');
   grid.innerHTML = data.map((d, i) => {
+    // 일반 매체만 paid/svc 재계산 (경기버스/KT스퀘어 제외)
+    const isBus_ = d.name === '경기버스' || d.kind === 'bus';
+    const isKt_  = d.name === 'KT Square';
+    if (!isBus_ && !isKt_) {
+      const recalc = recalcPaidSvc(d.name);
+      if (recalc) {
+        d.paid = recalc.paid;
+        d.svc  = recalc.svc;
+      }
+    }
     const col = getColors(d.bookPct);
     const isBus       = d.name === '경기버스' || d.kind === 'bus';
-    const isTownboard = d.name === '타운보드S' || d.name === '타운보드L' || d.kind === 'townboard';
     const unit  = isBus ? '대' : '구좌';
 
     // 도넛 중앙 표시값
+    const isKtSquare = d.name === 'KT Square';
     let centerPct, centerLabel, totalPctDisp = '';
-    if (isBus) {
+    let paidPctDisp;
+    if (isKtSquare) {
+      // KT 스퀘어: 부킹률 무의미 → 확정부킹 건수만 표시
+      centerLabel = '확정부킹';
+      paidPctDisp = d.booked != null ? (Math.round(d.booked * 10) / 10) + '건' : '-';
+      centerPct = null;
+    } else if (isBus) {
       centerPct = d.bookPct;
       centerLabel = '집행률';
-    } else if (isTownboard) {
-      centerPct = d.bookPct;
-      centerLabel = '송출률';
+      paidPctDisp = centerPct !== null && centerPct !== undefined ? centerPct.toFixed(1) + '%' : '-';
     } else {
-      // 일반 매체: 도넛 중앙은 유가부킹률
-      centerPct = (d.comTotal && d.paid != null) ? (d.paid / d.comTotal * 100) : null;
-      centerLabel = '유가율';
-      if (d.bookPct !== null && d.bookPct !== undefined) {
-        totalPctDisp = '전체 ' + Number(d.bookPct).toFixed(1) + '%';
-      }
+      // 일반 매체: 부킹률 (확정부킹 ÷ 총재원)
+      centerPct = d.bookPct;
+      centerLabel = '부킹률';
+      paidPctDisp = centerPct !== null && centerPct !== undefined ? centerPct.toFixed(1) + '%' : '-';
     }
-    const paidPctDisp = centerPct !== null && centerPct !== undefined ? centerPct.toFixed(1) + '%' : '-';
 
     // 카드 상태는 전체 부킹률 기준
-    const st = getStatus(d.bookPct, getMonthsAhead(activeMonth));
+    const st = isKtSquare ? 'neutral' : getStatus(d.bookPct, getMonthsAhead(activeMonth));
     const remainDisp = d.remain !== null && d.remain !== undefined ? (Math.round(d.remain*10)/10) + unit : '-';
     const badgeMap = {
       excellent:['badge-excellent','매우 양호'],
@@ -705,27 +987,22 @@ function renderCards(data) {
               <span class="legend-left"><span class="legend-dot" style="background:${col.remain};border:1px solid #d0d4de"></span><span class="legend-key">잔여</span></span>
               <span class="legend-val">${remainDisp}</span>
             </div>
-          ` : isTownboard ? `
-            <div class="legend-item">
-              <span class="legend-left"><span class="legend-dot" style="background:${col.paid}"></span><span class="legend-key">송출 합계</span></span>
-              <span class="legend-val">${d.booked != null ? Math.round(d.booked*10)/10 : 0}구좌</span>
-            </div>
-            <div class="legend-item">
-              <span class="legend-left"><span class="legend-dot" style="background:${col.svc}"></span><span class="legend-key">기준</span></span>
-              <span class="legend-val">${d.comTotal != null ? d.comTotal : 25}구좌</span>
-            </div>
-            <div class="legend-item">
-              <span class="legend-left"><span class="legend-dot" style="background:${col.remain};border:1px solid #d0d4de"></span><span class="legend-key">패키지</span></span>
-              <span class="legend-val">PKG</span>
-            </div>
           ` : `
             <div class="legend-item">
-              <span class="legend-left"><span class="legend-dot" style="background:${col.paid}"></span><span class="legend-key">유가</span></span>
-              <span class="legend-val">${d.paid != null ? Math.round(d.paid*10)/10 : 0}구좌</span>
+              <span class="legend-left"><span class="legend-dot" style="background:${col.paid}"></span><span class="legend-key">총 재원</span></span>
+              <span class="legend-val">${d.comTotal != null ? Math.round(d.comTotal*10)/10 : '-'}구좌</span>
             </div>
             <div class="legend-item">
-              <span class="legend-left"><span class="legend-dot" style="background:${col.svc}"></span><span class="legend-key">서비스</span></span>
-              <span class="legend-val">${d.svc != null ? Math.round(d.svc*10)/10 : 0}구좌</span>
+              <span class="legend-left"><span class="legend-dot" style="background:${col.svc}"></span><span class="legend-key">확정부킹</span></span>
+              <span class="legend-val">${d.booked != null ? Math.round(d.booked*10)/10 : 0}구좌</span>
+            </div>
+            <div class="legend-item sub">
+              <span class="legend-left"><span class="legend-sub-dot"></span><span class="legend-key sub">└ 유가</span></span>
+              <span class="legend-val sub">${d.paid != null ? Math.round(d.paid*10)/10 : 0}구좌</span>
+            </div>
+            <div class="legend-item sub">
+              <span class="legend-left"><span class="legend-sub-dot"></span><span class="legend-key sub">└ 서비스</span></span>
+              <span class="legend-val sub">${d.svc != null ? Math.round(d.svc*10)/10 : 0}구좌</span>
             </div>
             <div class="legend-item">
               <span class="legend-left"><span class="legend-dot" style="background:${col.remain};border:1px solid #d0d4de"></span><span class="legend-key">잔여</span></span>
@@ -744,19 +1021,9 @@ function renderCards(data) {
       if (!canvas) return;
       const col      = getColors(d.bookPct);
       const remainVal = d.remain != null ? d.remain : 0;
-      const isBus       = d.name === '경기버스' || d.kind === 'bus';
-      const isTownboard = d.name === '타운보드S' || d.name === '타운보드L' || d.kind === 'townboard';
-      // 차트 데이터: [유가/집행/송출, 서비스, 잔여]
-      let vals;
-      if (isBus) {
-        vals = [(d.booked || 0), 0, remainVal];
-      } else if (isTownboard) {
-        const base = d.comTotal || 25;
-        const sent = d.booked || 0;
-        vals = [sent, 0, Math.max(0, base - sent)];
-      } else {
-        vals = d.comTotal != null ? [d.paid||0, d.svc||0, remainVal] : [d.paid||0, d.svc||0, 0];
-      }
+      const isBus = d.name === '경기버스' || d.kind === 'bus';
+      // 차트 데이터: [확정부킹/집행, 0, 잔여]
+      const vals = [(d.booked || 0), 0, remainVal];
       chartInstances[`chart_${i}`] = new Chart(canvas, {
         type: 'doughnut',
         data: {
@@ -771,9 +1038,7 @@ function renderCards(data) {
           plugins: {
             legend: { display: false },
             tooltip: { callbacks: { label: ctx => {
-              const labels = isBus ? ['집행', '', '잔여']
-                : isTownboard ? ['송출', '', '여유']
-                : ['유가','서비스','잔여'];
+              const labels = isBus ? ['집행', '', '잔여'] : ['확정부킹', '', '잔여'];
               const u = isBus ? '대' : '구좌';
               return ` ${labels[ctx.dataIndex]}: ${ctx.parsed}${u}`;
             }}}
@@ -804,27 +1069,9 @@ function renderPanel() {
     : { total:null, booked:0, remain:null, list:[] };
 
   const isBus = panelMedia === '경기버스';
-  const isTownboard = panelMedia === '타운보드S' || panelMedia === '타운보드L';
   const list = mData.list || [];
 
-  if (isTownboard) {
-    const totalSent = mData.totalSent || 0;
-    const totalReal = mData.totalReal || 0;
-    document.getElementById('panelSummary').innerHTML = `
-      <div class="p-chip">
-        <div class="p-chip-label">합계 송출</div>
-        <div class="p-chip-val ok">${Number(totalSent).toFixed(1).replace(/\.0$/, '')}</div>
-      </div>
-      <div class="p-chip">
-        <div class="p-chip-label">실 재원</div>
-        <div class="p-chip-val">${Number(totalReal).toFixed(1).replace(/\.0$/, '')}</div>
-      </div>
-      <div class="p-chip">
-        <div class="p-chip-label">광고주</div>
-        <div class="p-chip-val">${list.length}건</div>
-      </div>
-    `;
-  } else if (isBus) {
+  if (isBus) {
     // 경기버스: 총재원/집행/잔여 (대 단위)
     const pct = mData.bookPct;
     const pctCls = pct == null ? '' : pct >= 70 ? 'ok' : pct >= 40 ? 'warn' : 'danger';
@@ -842,125 +1089,365 @@ function renderPanel() {
         <div class="p-chip-val">${mData.remain != null ? Math.round(mData.remain) : '-'}대</div>
       </div>
     `;
-  } else {
-    const bookedPct = mData.comTotal ? (mData.booked / mData.comTotal * 100).toFixed(1) : null;
-    const pctCls    = bookedPct === null ? '' : bookedPct >= 70 ? 'ok' : bookedPct >= 40 ? 'warn' : 'danger';
-    const normalSlot = mData.paid != null ? mData.paid : list.filter(a => a.type === '일반').reduce((s,a) => s + (a.slot||0), 0);
-    const svcSlot    = mData.svc  != null ? mData.svc  : list.filter(a => a.type === '서비스').reduce((s,a) => s + (a.slot||0), 0);
+  } else if (panelMedia === 'KT Square') {
+    // KT 스퀘어: 부킹률 의미 없음 → 확정부킹/잔여 건수만
+    const list_kt = mData.list || [];
+    const totalBooked = list_kt.reduce((s, a) => s + (Number(a.slot) || 0), 0);
+    const fmt = v => v != null ? Number(v).toFixed(1).replace(/\.0$/, '') : '-';
     document.getElementById('panelSummary').innerHTML = `
-      <div class="p-chip">
-        <div class="p-chip-label">부킹률</div>
-        <div class="p-chip-val ${pctCls}">${bookedPct !== null ? bookedPct+'%' : '-'}</div>
+      <div class="panel-bar-wrap">
+        <div class="panel-bar-header">
+          <div class="panel-bar-pct">
+            <span class="panel-bar-pct-label">확정부킹</span>
+            <span class="panel-bar-pct-val ok">${fmt(totalBooked || mData.booked)}<span style="font-size:13px;font-weight:500;margin-left:4px">건</span></span>
+          </div>
+          <div class="panel-bar-total">
+            <strong>잔여 ${fmt(mData.remain)}</strong>구좌
+          </div>
+        </div>
       </div>
-      <div class="p-chip">
-        <div class="p-chip-label">유가 구좌</div>
-        <div class="p-chip-val ok">${Number(normalSlot).toFixed(2).replace(/\.?0+$/, '')}</div>
-      </div>
-      <div class="p-chip">
-        <div class="p-chip-label">서비스 구좌</div>
-        <div class="p-chip-val">${Number(svcSlot).toFixed(2).replace(/\.?0+$/, '')}</div>
+    `;
+  } else {
+    // ── 헤더 계산용: 해당 월 15일 이상 운영 광고만 포함 ──
+    const monthMatch = panelMonth.match(/(\d{1,2})월/);
+    const hdrTargetMonth = monthMatch ? parseInt(monthMatch[1]) : (new Date().getMonth() + 1);
+    const hdrTargetYear  = 2026;
+    const hdrMonthDays   = new Date(hdrTargetYear, hdrTargetMonth, 0).getDate();
+
+    // 해당 월에 광고가 며칠 운영되는지 계산
+    function activeDaysInMonth(periodStr) {
+      if (!periodStr || !String(periodStr).trim()) return hdrMonthDays; // 빈 period = 월 전체
+      const segments = String(periodStr).split(/,/).map(s => s.trim()).filter(Boolean);
+      let total = 0;
+      let anyValidFormat = false;
+
+      segments.forEach(seg => {
+        // "3~6월" 같은 월 단위
+        const monthRange = seg.match(/^(\d{1,2})\s*~\s*(\d{1,2})\s*월?$/);
+        if (monthRange) {
+          anyValidFormat = true;
+          const sm = parseInt(monthRange[1]);
+          const em = parseInt(monthRange[2]);
+          if (hdrTargetMonth >= sm && hdrTargetMonth <= em) total += hdrMonthDays;
+          return;
+        }
+        const parts = seg.split(/~/);
+        if (parts.length !== 2) return;
+        const parseDate = (str) => {
+          const m = str.trim().match(/^(?:(\d{2,4})\/)?(\d{1,2})\/(\d{1,2})$/);
+          if (!m) return null;
+          let y = m[1] ? parseInt(m[1]) : hdrTargetYear;
+          if (y < 100) y += 2000;
+          return new Date(y, parseInt(m[2]) - 1, parseInt(m[3]));
+        };
+        const s = parseDate(parts[0]);
+        const e = parseDate(parts[1]);
+        if (!s || !e) return;
+        anyValidFormat = true;
+        const monthStart = new Date(hdrTargetYear, hdrTargetMonth - 1, 1);
+        const monthEnd   = new Date(hdrTargetYear, hdrTargetMonth, 0);
+        if (e < monthStart || s > monthEnd) return;
+        const segStart = s >= monthStart ? s : monthStart;
+        const segEnd   = e <= monthEnd   ? e : monthEnd;
+        total += Math.floor((segEnd - segStart) / 86400000) + 1;
+      });
+      // 어떤 형식도 인식 못한 경우 (예: "매시 0~24분") → 월 전체로 fallback
+      if (!anyValidFormat) return hdrMonthDays;
+      return total;
+    }
+
+    // 광고주 리스트 기반 일반/서비스 구좌수 계산 (월 15일 이상 운영만)
+    const paidSlot = list
+      .filter(a => a.type === '일반' || a.type === '패키지' || a.type === '협찬' || a.type === '바터')
+      .filter(a => activeDaysInMonth(a.period) >= 15)
+      .reduce((s, a) => s + (Number(a.slot) || 0), 0);
+    const svcSlot = list
+      .filter(a => a.type === '서비스' || a.type === '타운보드(서비스)')
+      .filter(a => activeDaysInMonth(a.period) >= 15)
+      .reduce((s, a) => s + (Number(a.slot) || 0), 0);
+    // fallback - 리스트가 없을 때 mData 사용
+    const paid = list.length ? paidSlot : (mData.paid || 0);
+    const svc  = list.length ? svcSlot  : (mData.svc  || 0);
+
+    const comTotal = mData.comTotal || 0;
+    const booked = paid + svc;
+    const remain = Math.max(0, comTotal - booked);
+
+    const bookedPctNum = comTotal ? (booked / comTotal * 100) : 0;
+    const bookedPct = comTotal ? bookedPctNum.toFixed(1) : null;
+    const pctCls    = bookedPct === null ? '' : bookedPctNum >= 70 ? 'ok' : bookedPctNum >= 40 ? 'warn' : 'danger';
+    const fmt = v => v != null ? Number(v).toFixed(1).replace(/\.0$/, '') : '-';
+
+    // 막대 폭 (총재원 기준 %)
+    const paidW   = comTotal ? Math.max(0, Math.min(100, paid / comTotal * 100)) : 0;
+    const svcW    = comTotal ? Math.max(0, Math.min(100, svc / comTotal * 100)) : 0;
+    const remainW = Math.max(0, 100 - paidW - svcW);
+
+    document.getElementById('panelSummary').innerHTML = `
+      <div class="panel-bar-wrap">
+        <div class="panel-bar-header">
+          <div class="panel-bar-pct">
+            <span class="panel-bar-pct-label">부킹률</span>
+            <span class="panel-bar-pct-val ${pctCls}">${bookedPct !== null ? bookedPct + '%' : '-'}</span>
+          </div>
+          <div class="panel-bar-total">
+            <strong>총 ${fmt(comTotal)}</strong>구좌
+            <span style="margin-left:8px;color:var(--text3);font-size:11px">· 일반 ${fmt(paid)} · 서비스 ${fmt(svc)} · 잔여 ${fmt(remain)}</span>
+          </div>
+        </div>
+        <div class="panel-bar">
+          <div class="panel-bar-fill" style="width:${paidW}%" title="일반 ${fmt(paid)}구좌">
+            <span class="panel-bar-val-text">${paidW >= 10 ? fmt(paid) + '구좌' : ''}</span>
+          </div>
+          <div class="panel-bar-service" style="width:${svcW}%" title="서비스 ${fmt(svc)}구좌">
+            <span class="panel-bar-val-text">${svcW >= 10 ? fmt(svc) + '구좌' : ''}</span>
+          </div>
+          <div class="panel-bar-remain" style="width:${remainW}%" title="잔여 ${fmt(remain)}구좌">
+            <span class="panel-bar-val-text">${remainW >= 10 ? fmt(remain) + '구좌' : ''}</span>
+          </div>
+        </div>
       </div>
     `;
   }
 
   const body     = document.getElementById('panelBody');
 
-  // 경기버스용 광고주 리스트 (구분: 나래/중앙, 컬럼: 광고주/수량/기간)
-  if (isBus) {
-    const narae   = list.filter(a => a.type === '나래');
-    const central = list.filter(a => a.type === '중앙');
-    function busRows(items) {
-      if (!items.length) return '<div style="font-size:12px;color:var(--text3);padding:6px 10px;">-</div>';
-      return `
-        <div class="adv-row header-row" style="grid-template-columns: 1fr 50px 80px;">
-          <span>광고주</span><span style="text-align:center">수량</span><span style="text-align:right">기간</span>
-        </div>
-        ${items.map(a => `
-          <div class="adv-row" style="grid-template-columns: 1fr 50px 80px;">
-            <span class="adv-name">${a.name}</span>
-            <span class="adv-slot">${a.qty}대</span>
-            <span class="adv-period">${a.period || '-'}</span>
-          </div>
-        `).join('')}
-      `;
-    }
-    body.innerHTML = `
-      <div class="adv-section-title"><span class="type-badge type-normal">나래</span> 나래 광고주</div>
-      ${busRows(narae)}
-      <div class="adv-section-title"><span class="type-badge type-service">중앙</span> 중앙 광고주</div>
-      ${busRows(central)}
-    `;
-    return;
-  }
-
-  const normals  = list.filter(a => a.type === '일반');
-  const services = list.filter(a => a.type === '서비스');
-
-  // 타운보드: 패키지 정보 + 광고주 리스트
-  const isTownboardPanel = panelMedia === '타운보드S' || panelMedia === '타운보드L';
-  if (isTownboardPanel) {
-    const advs = list || [];
-    const ads      = advs.filter(a => a.type === '광고');
-    const directs  = advs.filter(a => a.type === '바로광고');
-
-    const renderAdvRow = (a) => `
-      <div class="adv-row" style="grid-template-columns: 1fr 90px 70px;">
-        <span class="adv-name">
-          ${a.name}
-          ${a.category ? `<span style="display:block;font-size:10px;color:var(--text3);margin-top:2px;font-weight:400">${a.category}${a.product ? ' · ' + a.product : ''}</span>` : ''}
-        </span>
-        <span class="adv-period">${a.period || '-'}</span>
-        <span class="adv-slot">${a.slot}구좌</span>
-      </div>
-    `;
-
-    body.innerHTML = `
-      ${ads.length ? `
-        <div class="adv-section-title"><span class="type-badge type-normal">광고</span> 광고 (${ads.length}건)</div>
-        <div class="adv-row header-row" style="grid-template-columns: 1fr 90px 70px;">
-          <span>캠페인</span><span style="text-align:right">기간</span><span style="text-align:right">구좌</span>
-        </div>
-        ${ads.map(renderAdvRow).join('')}
-      ` : ''}
-      ${directs.length ? `
-        <div class="adv-section-title"><span class="type-badge type-service">바로</span> 바로광고 (${directs.length}건)</div>
-        <div class="adv-row header-row" style="grid-template-columns: 1fr 90px 70px;">
-          <span>캠페인</span><span style="text-align:right">기간</span><span style="text-align:right">구좌</span>
-        </div>
-        ${directs.map(renderAdvRow).join('')}
-      ` : ''}
-      ${!ads.length && !directs.length ? `<div class="empty-state">${activeMonth}에 운영 중인 광고가 없습니다</div>` : ''}
-    `;
-    return;
-  }
-
   if (list.length === 0) {
     body.innerHTML = `<div class="empty-state">등록된 광고주가 없습니다</div>`;
     return;
   }
 
-  function renderRows(items) {
-    if (!items.length) return '<div style="font-size:12px;color:var(--text3);padding:6px 10px;">-</div>';
+  // panelMonth에서 년/월 추출
+  const monthMatch = panelMonth.match(/(\d{1,2})월/);
+  const targetMonth = monthMatch ? parseInt(monthMatch[1]) : (new Date().getMonth() + 1);
+  const targetYear = 2026;
+
+  // 해당 월의 일수
+  const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
+  const today = new Date();
+  const isCurrentMonth = (today.getFullYear() === targetYear && today.getMonth() + 1 === targetMonth);
+  const todayDate = today.getDate();
+
+  // period 문자열을 { startDay, endDay } 배열로 파싱 (여러 구간 가능)
+  // 지원 포맷:
+  //   "4/7~4/21"        — 같은 해, M/D 기준
+  //   "3/1~5/31"        — 여러 달
+  //   "25/12/16~26/1/15" — YY/M/D
+  //   "26/05/01~27/04/30" — YYYY 4자리
+  //   "4/22~4/23, 4/27~5/26" — 쉼표로 구분된 여러 구간
+  //   "3~6월"           — 월 단위
+  //   "1~12월" / "1~12"  — 월 단위
+  function parsePeriod(periodStr, year, mo) {
+    const fullMonth = () => [{ start: 1, end: new Date(year, mo, 0).getDate() }];
+
+    // period가 비어있으면 해당 월 전체 (1일~말일) 채움
+    if (!periodStr || !String(periodStr).trim()) {
+      return fullMonth();
+    }
+    const segments = String(periodStr).split(/,/).map(s => s.trim()).filter(Boolean);
+    const ranges = [];
+    let anyValidFormat = false;  // 알려진 형식이 하나라도 인식됐는지
+
+    segments.forEach(seg => {
+      // "3~6월" 같은 월 단위
+      const monthRange = seg.match(/^(\d{1,2})\s*~\s*(\d{1,2})\s*월?$/);
+      if (monthRange) {
+        anyValidFormat = true;
+        const sm = parseInt(monthRange[1]);
+        const em = parseInt(monthRange[2]);
+        if (mo >= sm && mo <= em) {
+          ranges.push({ start: 1, end: new Date(year, mo, 0).getDate() });
+        }
+        return;
+      }
+
+      // 일반 날짜 범위
+      // 시작/종료 분리
+      const parts = seg.split(/~/);
+      if (parts.length !== 2) return;
+      const startStr = parts[0].trim();
+      const endStr   = parts[1].trim();
+
+      const parseDate = (str) => {
+        // "25/12/16", "26/1/15", "26/05/01", "12/29", "4/7" 등
+        const m = str.match(/^(?:(\d{2,4})\/)?(\d{1,2})\/(\d{1,2})$/);
+        if (!m) return null;
+        let y = m[1] ? parseInt(m[1]) : year;
+        if (y < 100) y += 2000;
+        return { y: y, m: parseInt(m[2]), d: parseInt(m[3]) };
+      };
+
+      const s = parseDate(startStr);
+      const e = parseDate(endStr);
+      if (!s || !e) return;
+
+      anyValidFormat = true;  // 날짜 형식 인식됨
+
+      // 해당 월(year-mo)과 겹치는 구간 계산
+      const monthStart = new Date(year, mo - 1, 1);
+      const monthEnd   = new Date(year, mo, 0);
+      const segStart   = new Date(s.y, s.m - 1, s.d);
+      const segEnd     = new Date(e.y, e.m - 1, e.d);
+
+      if (segEnd < monthStart || segStart > monthEnd) return; // 안 겹침
+
+      const startDay = segStart >= monthStart ? s.d : 1;
+      const endDay   = segEnd   <= monthEnd   ? e.d : monthEnd.getDate();
+      if (startDay <= endDay) {
+        ranges.push({ start: startDay, end: endDay, segStart: segStart, segEnd: segEnd, monthStart, monthEnd });
+      }
+    });
+
+    // 어떤 형식도 인식 못한 경우 → 월 전체로 fallback (예: "매시 0~24분")
+    if (!anyValidFormat) return fullMonth();
+    return ranges;
+  }
+
+  // 요일 계산 (0=일, 6=토)
+  function dayOfWeek(year, month, day) {
+    return new Date(year, month - 1, day).getDay();
+  }
+
+  // 구좌수 → 바 높이 비율 (0.3 + slot * 0.4, 최대 0.95, 최소 0.25)
+  // 0.5구좌 → 50% / 1구좌 → 70% / 1.5구좌 → 90% / 2구좌+ → 95%
+  function slotToHeightRatio(slot) {
+    const s = Number(slot) || 0;
+    if (s <= 0) return 0.3;
+    return Math.min(0.95, Math.max(0.25, 0.3 + s * 0.4));
+  }
+
+  // 구좌수 뱃지 클래스 (시각적 강조)
+  function slotBadgeClass(slot, typeClass) {
+    const s = Number(slot) || 0;
+    if (typeClass === 'type-service') return 'svc';
+    if (s < 1) return 'half';
+    if (s >= 2) return 'large';
+    return '';
+  }
+
+  // 구좌수 표시 포맷 (정수면 정수로, 소수면 소수로)
+  function formatSlot(slot) {
+    const s = Number(slot) || 0;
+    if (s === 0) return '-';
+    // 소수점 1자리로 반올림 (예: 2.175 → 2.2, 0.725 → 0.7)
+    return Number.isInteger(s) ? String(s) : (Math.round(s * 10) / 10).toFixed(1).replace(/\.0$/, '');
+  }
+
+  // 편성표 한 줄 렌더링
+  function renderScheduleRow(a, typeClass) {
+    const ranges = parsePeriod(a.period, targetYear, targetMonth);
+    const heightRatio = slotToHeightRatio(a.slot);
+    const verticalPad = (1 - heightRatio) / 2 * 100;  // %
+    const barStyle = `top:${verticalPad.toFixed(1)}%;bottom:${verticalPad.toFixed(1)}%`;
+
+    const dayCells = [];
+    for (let d = 1; d <= 31; d++) {
+      if (d > daysInMonth) {
+        dayCells.push('<div class="sch-day" style="background:var(--bg3);opacity:0.4"></div>');
+        continue;
+      }
+      const dow = dayOfWeek(targetYear, targetMonth, d);
+      const isToday = isCurrentMonth && d === todayDate;
+      const cls = ['sch-day'];
+      if (dow === 0 || dow === 6) cls.push('weekend');
+      if (isToday) cls.push('today');
+
+      let bar = '';
+      ranges.forEach(r => {
+        if (d >= r.start && d <= r.end) {
+          const barCls = ['sch-bar', typeClass];
+          if (d === r.start) barCls.push('start');
+          if (d === r.end)   barCls.push('end');
+          bar = `<div class="${barCls.join(' ')}" style="${barStyle}"></div>`;
+        }
+      });
+      dayCells.push(`<div class="${cls.join(' ')}">${bar}</div>`);
+    }
+
+    const slotDisp = formatSlot(a.slot);
+    const badgeCls = slotBadgeClass(a.slot, typeClass);
+    const nameTitle = `${a.name}${a.period ? ' · ' + a.period : ''}${a.slot ? ' · ' + a.slot + '구좌' : ''}`;
+
     return `
-      <div class="adv-row header-row">
-        <span>광고주</span><span style="text-align:center">RT</span><span style="text-align:center">구좌</span><span style="text-align:right">기간</span>
-      </div>
-      ${items.map(a => `
-        <div class="adv-row">
-          <span class="adv-name">${a.name}</span>
-          <span class="adv-runtime">${a.runtime}s</span>
-          <span class="adv-slot">${a.slot}</span>
-          <span class="adv-period">${a.period || '-'}</span>
+      <div class="sch-cell name ${typeClass}-type" title="${nameTitle.replace(/"/g, '&quot;')}">
+        <div class="sch-name-wrap">
+          <span class="sch-name-text">${a.name}</span>
+          <span class="slot-badge ${badgeCls}">${slotDisp}</span>
         </div>
-      `).join('')}
+      </div>
+      ${dayCells.join('')}
     `;
   }
 
+  // 헤더 (1~31일)
+  function renderScheduleHeader() {
+    const headerCells = ['<div class="sch-cell day-header first">광고주</div>'];
+    for (let d = 1; d <= 31; d++) {
+      let cls = 'sch-cell day-header';
+      if (d <= daysInMonth) {
+        const dow = dayOfWeek(targetYear, targetMonth, d);
+        if (dow === 0) cls += ' weekend';
+        else if (dow === 6) cls += ' saturday';
+      } else {
+        cls += '" style="opacity:0.3';
+      }
+      headerCells.push(`<div class="${cls}">${d}</div>`);
+    }
+    return headerCells.join('');
+  }
+
+  function renderScheduleSection(title, items, typeClass) {
+    if (!items.length) return '';
+    return `
+      <div class="schedule-wrap">
+        <div class="sch-section-title">
+          <span class="type-badge type-${typeClass === 'type-normal' ? 'normal' : 'service'}">${title.split(' ')[0]}</span>
+          ${title} (${items.length}건)
+        </div>
+        <div class="schedule-scroll">
+          <div class="schedule-table">
+            ${renderScheduleHeader()}
+            ${items.map(a => renderScheduleRow(a, typeClass)).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── 경기버스: 편성표 형태 (중앙 → 나래, 대수 내림차순) ──
+  if (isBus) {
+    const qtyDesc = (a, b) => (Number(b.qty) || 0) - (Number(a.qty) || 0);
+    const centralAdvs = list
+      .filter(a => a.type === '중앙')
+      .sort(qtyDesc)
+      .map(a => ({ ...a, slot: a.qty }));
+    const naraeAdvs = list
+      .filter(a => a.type === '나래')
+      .sort(qtyDesc)
+      .map(a => ({ ...a, slot: a.qty }));
+
+    body.innerHTML = `
+      ${renderScheduleSection('중앙 광고주', centralAdvs, 'type-service')}
+      ${renderScheduleSection('나래 광고주', naraeAdvs, 'type-normal')}
+      ${(!centralAdvs.length && !naraeAdvs.length) ? '<div class="sch-empty">' + panelMonth + '에 운영 중인 광고주가 없습니다</div>' : ''}
+    `;
+    return;
+  }
+
+  // ── 일반 OOH 매체: 유가/서비스 광고주 편성표 ──
+  // 정렬: 다구좌(큰 값) → 1구좌 → 0.5구좌 (slot 내림차순)
+  const slotDesc = (a, b) => (Number(b.slot) || 0) - (Number(a.slot) || 0);
+  const paidAdvs = list
+    .filter(a => a.type === '일반' || a.type === '패키지' || a.type === '협찬' || a.type === '바터')
+    .sort(slotDesc);
+  const svcAdvs  = list
+    .filter(a => a.type === '서비스' || a.type === '타운보드(서비스)')
+    .sort(slotDesc);
+
   body.innerHTML = `
-    <div class="adv-section-title"><span class="type-badge type-normal">일반</span> 유가 광고주</div>
-    ${renderRows(normals)}
-    <div class="adv-section-title"><span class="type-badge type-service">서비스</span> 서비스 광고주</div>
-    ${renderRows(services)}
+    ${renderScheduleSection('유가 광고주', paidAdvs, 'type-normal')}
+    ${renderScheduleSection('서비스 광고주', svcAdvs, 'type-service')}
+    ${(!paidAdvs.length && !svcAdvs.length) ? '<div class="sch-empty">' + panelMonth + '에 운영 중인 광고주가 없습니다</div>' : ''}
   `;
 }
 
@@ -991,118 +1478,84 @@ function render() {
   if (!activeMonth || !SUMMARY[activeMonth]) return;
   const data = SUMMARY[activeMonth];
   renderMonthTabs();
-  renderAlerts(data);
   renderCards(data);
-  renderTownboardSection();
+  renderLightboxSection();
 }
 
-function renderTownboardSection() {
-  const grid = document.getElementById('townboardGrid');
-  if (!grid) return;
+function renderLightboxSection() {
+  const container = document.getElementById('lightboxSection');
+  if (!container) return;
+  const lb = (ADVERTISERS && ADVERTISERS.__lightbox) || { rows: [] };
+  const rows = lb.rows || [];
 
-  const TOWNBOARDS = ['타운보드S', '타운보드L'];
-  grid.innerHTML = TOWNBOARDS.map(name => renderTownboardCard(name)).join('');
-}
-
-function renderTownboardCard(name) {
-  const data = ADVERTISERS[name];
-  if (!data) return '';
-  const monthData = data[activeMonth] || {};
-  const packages   = monthData.packages || [];
-  const groups     = monthData.groups || {};
-  const totalSent  = monthData.totalSent || 0;
-  const totalReal  = monthData.totalReal || 0;
-  const list       = monthData.list || [];
-
-  const fmt = n => Number(n).toFixed(1).replace(/\.0$/, '');
-
-  // 패키지 표 (전국F/A/B, 수도권F/A/B + 합계)
-  const pkgRows = packages.map(p => `
-    <tr>
-      <td>${p.name}</td>
-      <td>${fmt(p.sent)}</td>
-      <td>${(p.ratio * 100).toFixed(0)}%</td>
-      <td>${fmt(p.real)}</td>
-    </tr>
-  `).join('');
-
-  // A/B 그룹
-  let groupsHTML = '';
-  if (groups.A || groups.B) {
-    const renderG = (key, g) => {
-      if (!g) return '';
-      const overCls = g.pct && g.pct >= 100 ? 'over' : '';
-      return `
-        <div class="tb-group">
-          <div class="tb-group-name">${key}그룹</div>
-          <div class="tb-group-pct ${overCls}">${g.pct != null ? g.pct.toFixed(0) + '%' : '-'}</div>
-          <div class="tb-group-detail">${fmt(g.real || 0)} / ${g.total}</div>
-        </div>
-      `;
-    };
-    groupsHTML = `
-      <div class="tb-groups">
-        ${renderG('A', groups.A)}
-        ${renderG('B', groups.B)}
-      </div>
-    `;
+  if (!rows.length) {
+    container.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px">라이트박스 / 아트월 데이터가 없습니다</div>';
+    return;
   }
 
-  // 광고주 카운트 - 활성 월의 광고주
-  const adCount = list.filter(a => a.type === '광고').length;
-  const directCount = list.filter(a => a.type === '바로광고').length;
+  // 월 헤더
+  const monthHeaders = [];
+  for (let m = 1; m <= 12; m++) monthHeaders.push(`<div class="lb-cell header">${m}월</div>`);
 
-  return `
-    <div class="tb-card" onclick="openPanel('${name}')">
-      <div class="tb-header">
-        <span class="tb-name">${name}</span>
-        <span class="tb-month-pill">${activeMonth}</span>
+  // 데이터 행
+  const dataRows = rows.map(r => {
+    const cells = [
+      `<div class="lb-cell category">${r.category || ''}</div>`,
+      `<div class="lb-cell media">${r.media || ''}</div>`,
+    ];
+
+    // 첫 월에 긴 메모(여러 셀에 걸친 공지)가 있는지 확인
+    // 메모 패턴: 첫 월 셀에 긴 텍스트가 있고 다른 월에는 거의 없는 경우
+    const monthValues = [];
+    for (let m = 1; m <= 12; m++) {
+      const v = (r.months && r.months[m + '월']) || '';
+      monthValues.push(v);
+    }
+    // 첫 셀에 긴 메모만 있는 경우 → 12개월 통합 표시
+    const firstVal = monthValues[0];
+    const hasOnlyFirst = firstVal && monthValues.slice(1).every(v => !v);
+    const isNote = hasOnlyFirst && firstVal.length > 15;
+
+    if (isNote) {
+      // 1개 셀로 12개월 합쳐서 표시
+      cells.push(`<div class="lb-cell value note" style="grid-column: span 12; white-space: normal; text-align: left">${firstVal}</div>`);
+    } else {
+      monthValues.forEach((v, idx) => {
+        if (!v) {
+          cells.push(`<div class="lb-cell value"></div>`);
+          return;
+        }
+        // 상태 분류
+        let cls = 'value has-ad';
+        if (v.includes('완료') || v.includes('부킹 완료')) cls = 'value completed';
+        else if (v.includes('가부킹') || v.includes('협의')) cls = 'value tentative';
+        cells.push(`<div class="lb-cell ${cls}" title="${v.replace(/"/g, '&quot;')}">${v}</div>`);
+      });
+    }
+    return cells.join('');
+  }).join('');
+
+  container.innerHTML = `
+    <div class="lb-wrap">
+      <div class="lb-scroll">
+        <div class="lb-table">
+          <div class="lb-cell header">구분</div>
+          <div class="lb-cell header" style="text-align:left">매체</div>
+          ${monthHeaders.join('')}
+          ${dataRows}
+        </div>
       </div>
-
-      <div class="tb-summary">
-        <div class="tb-stat">
-          <div class="tb-stat-label">합계 송출</div>
-          <div class="tb-stat-val accent">${fmt(totalSent)}</div>
-        </div>
-        <div class="tb-stat">
-          <div class="tb-stat-label">실 재원</div>
-          <div class="tb-stat-val">${fmt(totalReal)}</div>
-        </div>
-        <div class="tb-stat">
-          <div class="tb-stat-label">광고주</div>
-          <div class="tb-stat-val">${list.length}<span style="font-size:11px;font-weight:400;color:var(--text3)">건</span></div>
-        </div>
-      </div>
-
-      <table class="tb-pkg-table">
-        <thead>
-          <tr>
-            <th>패키지</th>
-            <th>송출건</th>
-            <th>비중</th>
-            <th>실 재원</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${pkgRows}
-          <tr class="tb-total">
-            <td>합계</td>
-            <td>${fmt(totalSent)}</td>
-            <td>-</td>
-            <td>${fmt(totalReal)}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      ${groupsHTML}
     </div>
   `;
 }
+
+
 
 function setMonth(m) { activeMonth = m; render(); }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
+// 로그인 체크 후 데이터 로드
 loadData();
 </script>
 </body>
