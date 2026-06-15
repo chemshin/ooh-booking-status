@@ -596,8 +596,8 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 
 .lb-table {
   display: grid;
-  grid-template-columns: 110px 220px repeat(12, minmax(80px, 1fr));
-  min-width: 1300px;
+  grid-template-columns: 80px 130px repeat(12, minmax(60px, 1fr));
+  min-width: 1050px;
   font-size: 11.5px;
 }
 .lb-cell {
@@ -668,7 +668,7 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
     <span class="header-eyebrow">JoongAng BizSolutions</span>
     <h1>2026 OOH 재원 현황</h1>
   </div>
-  <span class="week-badge">4월 3주차 기준</span>
+  <span class="week-badge">로딩 중...</span>
 </header>
 
 <div class="month-tabs" id="monthTabs"></div>
@@ -761,15 +761,10 @@ async function loadData() {
     activeMonth = MONTHS.includes(curKey) ? curKey : (MONTHS[0] || "");
     panelMonth  = activeMonth;
 
-    // 주차 라벨 업데이트
+    // 상단 기준 라벨: 오늘 날짜 기준
     const badge = document.querySelector('.week-badge');
-    if (json.weekLabel) {
-      badge.textContent = json.weekLabel;
-    } else {
-      // weekLabel 없으면 summary 마지막 키에서 추출
-      const months = Object.keys(json.summary || {});
-      if (months.length) badge.textContent = months[months.length - 1] + ' 기준';
-    }
+    const today = new Date();
+    badge.textContent = `${today.getMonth() + 1}월 ${today.getDate()}일 기준`;
 
     render();
   } catch (e) {
@@ -834,7 +829,7 @@ function getColors(pct) {
 function renderMonthTabs() {
   const tabsEl = document.getElementById('monthTabs');
   tabsEl.innerHTML = MONTHS.map(m =>
-    `<button class="month-tab${m===activeMonth?' active':''}" onclick="setMonth('${m}')">${m}</button>`
+    `<button class="month-tab${m===activeMonth?' active':''}" onclick="setMonth('${m}')">${m.replace(/^\d{2}년\s*/, '')}</button>`
   ).join('');
   // 활성 탭이 화면에 보이도록 스크롤
   requestAnimationFrame(() => {
