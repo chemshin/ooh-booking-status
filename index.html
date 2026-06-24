@@ -422,9 +422,9 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 
 .schedule-table {
   display: grid;
-  grid-template-columns: 130px repeat(31, 1fr);
+  grid-template-columns: 150px repeat(31, 1fr);
   font-size: 11px;
-  min-width: 880px;
+  min-width: 900px;
   width: 100%;
 }
 .sch-cell {
@@ -482,7 +482,7 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 
 /* ── 광고주명 옆 구좌 뱃지 ── */
 .sch-name-wrap {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 4px;
   overflow: hidden;
 }
 .sch-name-text {
@@ -491,6 +491,22 @@ header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.rt-badge {
+  flex-shrink: 0;
+  font-size: 9.5px;
+  font-family: var(--mono);
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 4px;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+/* 초수별 색상 차등 — 짧을수록 옅게 */
+.rt-badge.rt-15 { background: rgba(120,130,150,0.08); color: rgba(100,110,130,0.7); }
+.rt-badge.rt-20 { background: rgba(80,100,140,0.12);  color: rgba(80,100,140,0.85); }
+.rt-badge.rt-30 { background: rgba(58,106,248,0.12);  color: var(--accent); }
+.rt-badge.rt-60 { background: rgba(214,60,60,0.12);   color: var(--danger); }
+
 .slot-badge {
   flex-shrink: 0;
   font-size: 9.5px;
@@ -1363,10 +1379,16 @@ function renderPanel() {
     const badgeCls = slotBadgeClass(a.slot, typeClass);
     const nameTitle = `${a.name}${a.period ? ' · ' + a.period : ''}${a.slot ? ' · ' + a.slot + '구좌' : ''}`;
 
+    // runtime 표시 (15/20/30/60초)
+    const rt = Number(a.runtime) || 0;
+    const rtClass = rt >= 60 ? 'rt-60' : rt >= 30 ? 'rt-30' : rt >= 20 ? 'rt-20' : 'rt-15';
+    const rtBadge = rt > 0 ? `<span class="rt-badge ${rtClass}">${rt}"</span>` : '';
+
     return `
       <div class="sch-cell name ${typeClass}-type" title="${nameTitle.replace(/"/g, '&quot;')}">
         <div class="sch-name-wrap">
           <span class="sch-name-text">${a.name}</span>
+          ${rtBadge}
           <span class="slot-badge ${badgeCls}">${slotDisp}</span>
         </div>
       </div>
