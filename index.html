@@ -909,7 +909,7 @@ function renderCards(data) {
     return total;
   }
 
-  function recalcPaidSvc(mediaName) {
+  function recalcPaidSvc(mediaName, comTotal) {
     const advData = ADVERTISERS && ADVERTISERS[mediaName] && ADVERTISERS[mediaName][activeMonth];
     const list = (advData && advData.list) || [];
     if (!list.length) return null;
@@ -920,7 +920,15 @@ function renderCards(data) {
     const svc = filtered
       .filter(a => a.type === '서비스' || a.type === '타운보드(서비스)')
       .reduce((s, a) => s + (Number(a.slot) || 0), 0);
-    return { paid: Math.round(paid * 10) / 10, svc: Math.round(svc * 10) / 10 };
+    // 확정부킹 = 유가 + 서비스 (15일 이상 필터 적용), 잔여 = 총재원 - 확정부킹
+    const booked = paid + svc;
+    const remain = comTotal != null ? Math.max(0, comTotal - booked) : null;
+    return {
+      paid:   Math.round(paid * 10) / 10,
+      svc:    Math.round(svc * 10) / 10,
+      booked: Math.round(booked * 10) / 10,
+      remain: remain != null ? Math.round(remain * 10) / 10 : null,
+    };
   }
 
   const grid = document.getElementById('cardGrid');
@@ -929,10 +937,16 @@ function renderCards(data) {
     const isBus_ = d.name === '경기버스' || d.kind === 'bus';
     const isKt_  = d.name === 'KT Square';
     if (!isBus_ && !isKt_) {
-      const recalc = recalcPaidSvc(d.name);
+      const recalc = recalcPaidSvc(d.name, d.comTotal);
       if (recalc) {
-        d.paid = recalc.paid;
-        d.svc  = recalc.svc;
+        d.paid   = recalc.paid;
+        d.svc    = recalc.svc;
+        d.booked = recalc.booked;
+        if (recalc.remain != null) d.remain = recalc.remain;
+        // bookPct도 재계산 (확정부킹 ÷ 총재원)
+        if (d.comTotal) {
+          d.bookPct = Math.round((recalc.booked / d.comTotal) * 1000) / 10;
+        }
       }
     }
     const col = getColors(d.bookPct);
