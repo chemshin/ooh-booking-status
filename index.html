@@ -1179,23 +1179,27 @@ function renderPanel() {
       .filter(a => a.type === '서비스' || a.type === '타운보드(서비스)')
       .filter(a => activeDaysInMonth(a.period) >= 15)
       .reduce((s, a) => s + (Number(a.slot) || 0), 0);
-    // fallback - 리스트가 없을 때 mData 사용
+    // 유가/서비스: 광고주 리스트 기반 계산 (15일 이상), fallback은 mData
     const paid = list.length ? paidSlot : (mData.paid || 0);
     const svc  = list.length ? svcSlot  : (mData.svc  || 0);
 
+    // 총재원/확정부킹/잔여: 시트 요약값(BR55/57 등)을 그대로 사용
     const comTotal = mData.comTotal || 0;
-    const booked = paid + svc;
-    const remain = Math.max(0, comTotal - booked);
+    const booked = mData.booked != null ? mData.booked : (paid + svc);
+    const remain = mData.remain != null ? mData.remain : Math.max(0, comTotal - booked);
 
     const bookedPctNum = comTotal ? (booked / comTotal * 100) : 0;
     const bookedPct = comTotal ? bookedPctNum.toFixed(1) : null;
     const pctCls    = bookedPct === null ? '' : bookedPctNum >= 70 ? 'ok' : bookedPctNum >= 40 ? 'warn' : 'danger';
     const fmt = v => v != null ? Number(v).toFixed(1).replace(/\.0$/, '') : '-';
 
-    // 막대 폭 (총재원 기준 %)
-    const paidW   = comTotal ? Math.max(0, Math.min(100, paid / comTotal * 100)) : 0;
-    const svcW    = comTotal ? Math.max(0, Math.min(100, svc / comTotal * 100)) : 0;
-    const remainW = Math.max(0, 100 - paidW - svcW);
+    // 막대 폭: 확정부킹(시트값)만큼을 유가:서비스 비율로 나눠서 그림, 나머지는 잔여
+    // → 유가+서비스가 확정부킹과 정확히 일치하지 않아도 시트 booked/remain에 맞춤
+    const bookedW = comTotal ? Math.max(0, Math.min(100, booked / comTotal * 100)) : 0;
+    const remainW = Math.max(0, 100 - bookedW);
+    const paidSvcSum = paid + svc;
+    const paidW = paidSvcSum > 0 ? bookedW * (paid / paidSvcSum) : bookedW;
+    const svcW  = paidSvcSum > 0 ? bookedW * (svc  / paidSvcSum) : 0;
 
     document.getElementById('panelSummary').innerHTML = `
       <div class="panel-bar-wrap">
